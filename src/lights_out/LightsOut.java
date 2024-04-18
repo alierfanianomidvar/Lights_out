@@ -1,10 +1,17 @@
 package lights_out;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LightsOut {
 
     private int[][] board;
     private final int[][][] pieces;
     private final int depth;
+
+    private int[] boardState;
+
+    private Map<BoardState, Boolean> memo = new HashMap<>();
 
     public LightsOut(
             int depth,
@@ -13,11 +20,20 @@ public class LightsOut {
         this.depth = depth;
         this.board = board;
         this.pieces = pieces;
+        initializeBoardState();
     }
 
     public boolean solve(int currentPiece) {
+
+        BoardState boardKey = new BoardState(boardState);
+        if (memo.containsKey(boardKey)) {
+            return memo.get(boardKey);
+        }
+
         if (currentPiece == pieces.length) {
-            return isSolved();
+            boolean solved = isSolved();
+            memo.put(boardKey, solved);
+            return solved;
         }
 
         for (int row = 0; row < board.length; row++) {
@@ -39,62 +55,68 @@ public class LightsOut {
             int xPosition,
             int yPosition) {
 
-        // Can we put the piece in the board or not !! ->
-        if (xPosition + piece.length > board.length
-                || yPosition + piece[0].length > board[0].length) {
+        if (xPosition + piece.length > board.length || yPosition + piece[0].length > board[0].length) {
             return false;
         }
 
-        // place the piece in the borad - >
         for (int i = 0; i < piece.length; i++) {
+            int boardX = xPosition + i;
+            if (boardX >= board.length) continue;  // to be sure that we do not go out of x bounds
             for (int j = 0; j < piece[i].length; j++) {
                 if (piece[i][j] == 1) {
-                    board[xPosition + i][yPosition + j] = (board[xPosition + i][yPosition + j] + 1) % depth;
+                    int bitPos = yPosition + j;
+                    if (bitPos >= board[0].length * bitsPerCell())
+                        continue; // to be sure that we do not go out of y bounds
+                    boardState[boardX] ^= (1 << bitPos);  // toggle the bit
                 }
             }
         }
         return true;
     }
 
-    /**
-     * We can remove this and just save the last bord, but it is not memory efficient.
-     * and this way it is easire to develop, but we need more time to run the code. this is just a trade-off
-     * between memory and time.
-     *
-     * But we must consider that we in this way we still can face the worst case, so it is not a good idea to think
-     * how we can make this time better, we must think how can we make the memory better in the algorithm.
-     */
-    private void removePiece(
-            int[][] piece,
-            int xPosition,
-            int yPosition) {
 
-        // Can we place the piece in the board !! - > here
-        if (xPosition + piece.length > board.length
-                || yPosition + piece[0].length > board[0].length) {
+    private void removePiece(int[][] piece, int xPosition, int yPosition) {
+        if (xPosition + piece.length > board.length || yPosition + piece[0].length > board[0].length) {
             return;
         }
-
         for (int i = 0; i < piece.length; i++) {
             for (int j = 0; j < piece[i].length; j++) {
                 if (piece[i][j] == 1) {
-                    // remove the piece from the board.
-                    board[xPosition + i][yPosition + j] = (board[xPosition + i][yPosition + j] - 1 + depth) % depth;
+                    int bitPos = yPosition + j;
+                    boardState[xPosition + i] ^= (1 << bitPos);  // Toggle the bit back
                 }
             }
         }
     }
 
     private boolean isSolved() {
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (board[i][j] != 0) {
-                    return false; // If we saw non zero value, we did not solve the problem.
-                }
-            }
+        for (int state : boardState) {
+            if (state != 0) return false;  // Check if all bits are 0
         }
         return true;
     }
 
+    private void initializeBoardState() {
+        boardState = new int[board.length];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                boardState[i] |= (board[i][j] << (j * bitsPerCell()));
+            }
+        }
+    }
+
+    private int bitsPerCell() {
+        return (int) (Math.log(depth) / Math.log(2));
+    }
+
+    private String boardToString() {
+        StringBuilder sb = new StringBuilder();
+        for (int[] row : board) {
+            for (int cell : row) {
+                sb.append(cell);
+            }
+        }
+        return sb.toString();
+    }
 
 }
