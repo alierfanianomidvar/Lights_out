@@ -6,7 +6,10 @@ public class LightsOut {
     private final int[][][] pieces;
     private final int depth;
 
-    public LightsOut(int depth, int[][] board, int[][][] pieces) {
+    public LightsOut(
+            int depth,
+            int[][] board,
+            int[][][] pieces) {
         this.depth = depth;
         this.board = board;
         this.pieces = pieces;
@@ -21,7 +24,7 @@ public class LightsOut {
             for (int col = 0; col < board[0].length; col++) {
                 if (placePiece(pieces[currentPiece], row, col)) {
                     if (solve(currentPiece + 1)) {
-                        System.out.println("row, col -> " + row + "||" + col + "pieces -> " + currentPiece);
+                        System.out.println("row, col -> " + row + "||" + col + " pieces -> " + currentPiece);
                         return true;
                     }
                     removePiece(pieces[currentPiece], row, col);
@@ -53,7 +56,14 @@ public class LightsOut {
         return true;
     }
 
-
+    /**
+     * We can remove this and just save the last bord, but it is not memory efficient.
+     * and this way it is easire to develop, but we need more time to run the code. this is just a trade-off
+     * between memory and time.
+     *
+     * But we must consider that we in this way we still can face the worst case, so it is not a good idea to think
+     * how we can make this time better, we must think how can we make the memory better in the algorithm.
+     */
     private void removePiece(
             int[][] piece,
             int xPosition,
@@ -74,7 +84,6 @@ public class LightsOut {
             }
         }
     }
-
 
     private boolean isSolved() {
         for (int i = 0; i < board.length; i++) {
