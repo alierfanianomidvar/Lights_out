@@ -1,7 +1,4 @@
 package lights_out;
-
-import lights_out.entity.Move;
-
 import java.util.*;
 
 public class LightsOutBfs {
