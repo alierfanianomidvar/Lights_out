@@ -1,9 +1,14 @@
 import lights_out.LightsOut;
 import lights_out.LightsOutBfs;
+import view.MatrixDisplay;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 public class Main {
 
@@ -42,6 +47,7 @@ public class Main {
                 }
             }
 
+            new MatrixDisplay(board);
             if (!bfsFlag) {
                 LightsOut solver = new LightsOut(depth, board, pieces);
 
