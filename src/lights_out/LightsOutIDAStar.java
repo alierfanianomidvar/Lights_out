@@ -2,7 +2,9 @@ package lights_out;
 
 import lights_out.record.Move;
 import lights_out.record.State;
+import view.Solution;
 
+import javax.swing.*;
 import java.util.*;
 
 public class LightsOutIDAStar {
@@ -48,7 +50,7 @@ public class LightsOutIDAStar {
             int threshold) {
         int f = g + calculateHeuristic(node.board()); // estimated cost of the cheapest solution for the node.
         if (f > threshold) return f;  // maximum allowed cost f for a path
-        if (isSolved(node.board())) {
+        if (node.moves().size() == pieces.length && isSolved(node.board())) {
             printSolution(node.moves());
             return -1; // Found solution
         }
@@ -69,6 +71,7 @@ public class LightsOutIDAStar {
         }
         return min;
     }
+
     private boolean isSolved(int[][] b) {
         for (int[] row : b) {
             for (int value : row) {
@@ -113,6 +116,11 @@ public class LightsOutIDAStar {
     // Print the solution moves
     private void printSolution(List<Move> moves) {
         moves.forEach(move -> System.out.println(move));
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Solution(moves);
+            }
+        });
     }
 
 
