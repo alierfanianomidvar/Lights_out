@@ -134,6 +134,12 @@ public class Menu extends JFrame {
 
                     boolean solutionFound = solver.solve(0);
                     if (solutionFound) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                new Solution(solver.getSolution());
+                            }
+                        });
+                        solver.printSolution();
                         System.out.println("Solution found!");
                     } else {
                         System.out.println("No solution exists.");

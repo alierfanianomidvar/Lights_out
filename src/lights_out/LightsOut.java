@@ -1,30 +1,40 @@
 package lights_out;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
 public class LightsOut {
 
     private int[][] board;
     private final int[][][] pieces;
     private final int depth;
+    private List<String> solution;  // List to store the solution using LinkedList
 
-    public LightsOut(int depth, int[][] board, int[][][] pieces) {
+
+    public LightsOut(
+            int depth,
+            int[][] board,
+            int[][][] pieces) {
         this.depth = depth;
         this.board = board;
         this.pieces = pieces;
+        this.solution = new LinkedList<>();
     }
 
     public boolean solve(int currentPiece) {
         if (currentPiece == pieces.length) {
             return isSolved();
         }
-
         for (int row = 0; row < board.length; row++) {
             for (int col = 0; col < board[0].length; col++) {
                 if (placePiece(pieces[currentPiece], row, col)) {
+                    solution.add("col - > " + col + " row - > " + row + " ||  pieces -> " + currentPiece);
                     if (solve(currentPiece + 1)) {
-                        System.out.println("col, row -> " + row + "||" + col + " pieces -> " + currentPiece);
+                        //System.out.println("col, row -> " + row + "||" + col + " pieces -> " + currentPiece);
                         return true;
                     }
-
+                    solution.remove(solution.size() - 1);
                     /**
                      * We can remove this and just save the last bord, but it is not memory efficient.
                      * and this way it is easire to develop, but we need more time to run the code. this is just a trade-off
@@ -118,5 +128,13 @@ public class LightsOut {
         return true;
     }
 
+    public void printSolution() {
+        for (String move : solution) {
+            System.out.println(move);
+        }
+    }
 
+    public List<String> getSolution() {
+        return solution;
+    }
 }

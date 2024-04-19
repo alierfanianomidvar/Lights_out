@@ -1,13 +1,6 @@
-import lights_out.LightsOut;
-import lights_out.LightsOutBfs;
-import lights_out.LightsOutIDAStar;
-import view.MatrixDisplay;
 import view.Menu;
 
 import javax.swing.*;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
 public class Main {
 
