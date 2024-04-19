@@ -2,7 +2,9 @@ package lights_out;
 
 import lights_out.record.Move;
 import lights_out.record.State;
+import view.Solution;
 
+import javax.swing.*;
 import java.util.*;
 
 
@@ -95,6 +97,12 @@ public class LightsOutBfs {
     }
 
     private void printSolution(List<Move> moves) {
+
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new Solution(moves);
+            }
+        });
         moves.forEach(System.out::println);
     }
 }

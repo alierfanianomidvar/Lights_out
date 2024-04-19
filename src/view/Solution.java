@@ -4,10 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class Solution extends JFrame {
+public class Solution<T> extends JFrame {
     private JTextArea solutionArea;
 
-    public Solution(List<String> solutionSteps) {
+    public Solution(List<T> solutionSteps) {
         setTitle("Solution Found");
         setSize(400, 300);
         setLocationRelativeTo(null);
@@ -17,8 +17,8 @@ public class Solution extends JFrame {
         solutionArea.setEditable(false);
 
         StringBuilder solutionText = new StringBuilder();
-        for (String step : solutionSteps) {
-            solutionText.append(step).append("\n");
+        for (T step : solutionSteps) {
+            solutionText.append(step.toString()).append("\n");
         }
         solutionArea.setText(solutionText.toString());
 
